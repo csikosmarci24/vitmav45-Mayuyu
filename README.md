@@ -25,7 +25,7 @@ Data:
 * DrugBank interaction graph (http://snap.stanford.edu/biodata/datasets/10001/10001-ChCh-Miner.html)
 
 Related files:
-* project/data_visualization.ipynb: Notebook with the download scripts, visualization and statistical processing of the data
+* project/data_visualization.ipynb: Notebook with the download scripts, visualization and processing of the data
 * project/100edges.html: Additional visualization of the interaction graph with its first 100 edges
 
 # Running the code (for later stages)

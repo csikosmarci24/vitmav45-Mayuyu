@@ -14,6 +14,10 @@ Members:
 
 Selected topic: Identification of drug interactions with graph autoencoder
 
+Our task is identifying if there are adverse reactions if a combination of drugs is used by a patient. For this task we will explore Variational Graph Auto-Encoder (VGAE) solutions. The model's input is an interaction graph showing which drugs have interference with each other. There is also the DrugBank database which contains more information on the individual drugs.
+
+Our first step is using only the interaction graph without any features to rebuild the edges. After that the accuracy can be improved by using DrugBank features.
+
 # Milestone 1
 
 Data:

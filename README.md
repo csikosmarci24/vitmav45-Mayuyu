@@ -20,6 +20,9 @@ Data:
 * DrugBank database (https://go.drugbank.com/)
 * DrugBank interaction graph (http://snap.stanford.edu/biodata/datasets/10001/10001-ChCh-Miner.html)
 
+Related files:
+* project/data_visualization.ipynb
+
 # Running the code (for later stages)
 
 Build the image:

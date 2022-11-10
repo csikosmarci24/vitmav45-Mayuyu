@@ -6,6 +6,7 @@ RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 
 RUN apt-get update
 RUN pip install gdown
+RUN pip install pandas
 
 COPY project/* project/
 
@@ -15,3 +16,5 @@ RUN cd project &&\
     gdown 1Ot-ICpiJRlisFvM9Fi6TM3Q6kAZaLS0y &&\
     gdown 1LSdAthCa69kWRIKoI5UmclLgf4OsSNAm &&\
     gdown 15_hqow9NT_M49OX7cXrG5P6vCgfbKyhP
+
+CMD ["python", "project/hello.py"]

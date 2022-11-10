@@ -46,3 +46,9 @@ Test GPU access in container:
 ```
 python project/hello.py
 ```
+
+# Materials for team members
+
+https://paperswithcode.com/paper/variational-graph-auto-encoders
+
+https://towardsdatascience.com/understanding-variational-autoencoders-vaes-f70510919f73

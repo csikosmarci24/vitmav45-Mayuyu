@@ -28,7 +28,7 @@ Related files:
 * project/data_visualization.ipynb: Notebook with the download scripts, visualization and processing of the data
 * project/100edges.html: Additional visualization of the interaction graph with its first 100 edges
 
-# Running the code (for later stages)
+# Running the code
 
 Build the image:
 
@@ -42,9 +42,15 @@ Run container:
 docker run --gpus all -it <image-name>
 ```
 
-Test GPU access in container:
+Test GPU access in container (this also runs automatically with docker run):
 ```
 python project/hello.py
+```
+
+All steps with shell script:
+```
+chmod +x build.sh
+./build.sh
 ```
 
 # Materials for team members

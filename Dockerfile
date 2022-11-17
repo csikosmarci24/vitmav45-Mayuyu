@@ -5,6 +5,7 @@ RUN rm /etc/apt/sources.list.d/cuda.list
 RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 
 RUN apt-get update
+RUN pip install dgl-cu116 dglgo -f https://data.dgl.ai/wheels/repo.html
 RUN pip install gdown
 RUN pip install pandas
 RUN pip install networkx

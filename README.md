@@ -47,7 +47,7 @@ Test GPU access in container:
 python project/hello.py
 ```
 
-All steps with shell script:
+All steps with shell script (Linux):
 ```
 chmod +x build.sh
 ./build.sh

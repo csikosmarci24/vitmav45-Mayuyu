@@ -53,6 +53,11 @@ chmod +x build.sh
 ./build.sh
 ```
 
+# VSCode development in container
+
+1. Install Remote Development extension
+2. Command Palette (Ctrl+Shift+P): Dev Containers: Rebuild and Reopen in Container
+
 # Materials for team members
 
 https://paperswithcode.com/paper/variational-graph-auto-encoders

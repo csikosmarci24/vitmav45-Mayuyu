@@ -19,5 +19,7 @@ RUN cd project/data &&\
     gdown 1LSdAthCa69kWRIKoI5UmclLgf4OsSNAm &&\
     gdown 15_hqow9NT_M49OX7cXrG5P6vCgfbKyhP
 
+EXPOSE 4000
+
 # Commented for testing
 # CMD ["python", "project/hello.py"]

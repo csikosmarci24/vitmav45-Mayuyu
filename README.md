@@ -57,6 +57,7 @@ chmod +x build.sh
 
 1. Install Remote Development extension
 2. Command Palette (Ctrl+Shift+P): Dev Containers: Rebuild and Reopen in Container
+3. Without Nvidia GPU: in .devcontainer/devcontainer.json comment out "runArgs"
 
 # Materials for team members
 

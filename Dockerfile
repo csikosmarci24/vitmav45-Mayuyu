@@ -7,6 +7,7 @@ RUN rm /etc/apt/sources.list.d/nvidia-ml.list
 RUN apt-get update
 RUN pip install gdown
 RUN pip install pandas
+RUN pip install networkx
 
 COPY project/ project/
 

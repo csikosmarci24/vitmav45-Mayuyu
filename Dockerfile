@@ -17,4 +17,5 @@ RUN cd project &&\
     gdown 1LSdAthCa69kWRIKoI5UmclLgf4OsSNAm &&\
     gdown 15_hqow9NT_M49OX7cXrG5P6vCgfbKyhP
 
-CMD ["python", "project/hello.py"]
+# Commented for testing
+# CMD ["python", "project/hello.py"]

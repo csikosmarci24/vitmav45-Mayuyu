@@ -42,7 +42,7 @@ Run container:
 docker run --gpus all -it <image-name>
 ```
 
-Test GPU access in container (this also runs automatically with docker run):
+Test GPU access in container:
 ```
 python project/hello.py
 ```

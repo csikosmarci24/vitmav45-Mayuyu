@@ -129,3 +129,9 @@ dmypy.json
 .pyre/
 
 .DS_Store
+
+# Datasets
+project/data/files
+
+# Pycharm idea
+.idea

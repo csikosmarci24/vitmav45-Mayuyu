@@ -6,6 +6,7 @@ import gzip
 import zipfile
 import pandas as pd
 from project.data.process_drugbank import parse_drugbank_xml
+from project.data.process_graph import parse_graph, create_network_graph_from
 
 """
 def parse_index_file(filename):
@@ -49,10 +50,7 @@ def load_data(dataset):
 
 
 def load_data():
-    with gzip.open('/Users/balazsmorvay/Documents/vitmav45-Mayuyu/project/data/files/ChCh-Miner_durgbank-chem-chem.tsv.gz') as f:
-        graph_df = pd.read_csv(f, delimiter='\t', names=['Source', 'Target'])
-
-    nx_graph = nx.from_pandas_edgelist(graph_df, source='Source', target='Target')
+    nx_graph = create_network_graph_from(parse_graph())
     adj = nx.adjacency_matrix(nx_graph)
 
     df = parse_drugbank_xml()

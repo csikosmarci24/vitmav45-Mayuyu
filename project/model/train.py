@@ -18,7 +18,7 @@ from sklearn.metrics import average_precision_score, roc_auc_score
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "True"
 
-parser = argparse.ArgumentParser(description="Variant Graph Auto Encoder")
+parser = argparse.ArgumentParser()
 parser.add_argument(
     "--learning_rate", type=float, default=0.01, help="Initial learning rate."
 )
@@ -57,24 +57,24 @@ def get_acc(adj_rec, adj_label):
 
 
 def get_scores(edges_pos, edges_neg, adj_rec):
-    def sigmoid(x):
-        return 1 / (1 + np.exp(-x))
-
-    # Predict on test set of edges
+    rec_acc = 0.0
     preds = []
     for e in edges_pos:
-        preds.append(sigmoid(adj_rec[e[0], e[1]].item()))
+        preds.append(adj_rec[e[0], e[1]].item())
+        if adj_rec[e[0], e[1]] > 0.5:
+            rec_acc += 1
+    rec_acc /= len(edges_pos)
 
     preds_neg = []
     for e in edges_neg:
-        preds_neg.append(sigmoid(adj_rec[e[0], e[1]].data))
+        preds_neg.append(adj_rec[e[0], e[1]].item())
 
     preds_all = np.hstack([preds, preds_neg])
     labels_all = np.hstack([np.ones(len(preds)), np.zeros(len(preds_neg))])
     roc_score = roc_auc_score(labels_all, preds_all)
     ap_score = average_precision_score(labels_all, preds_all)
 
-    return roc_score, ap_score
+    return roc_score, ap_score, rec_acc
 
 
 def train():
@@ -106,7 +106,6 @@ def train():
     graph = dgl.from_scipy(adj_normalization)
     graph.add_self_loop()
 
-    # Create Model
     pos_weight = float(adj.shape[0] * adj.shape[0] - adj.sum()) / adj.sum()
     norm = (
         adj.shape[0]
@@ -117,11 +116,6 @@ def train():
     adj_label = adj_train + sp.eye(adj_train.shape[0])
     adj_label = sparse_to_tuple(adj_label)
 
-    adj_norm = torch.sparse.FloatTensor(
-        torch.LongTensor(adj_norm[0].T),
-        torch.FloatTensor(adj_norm[1]),
-        torch.Size(adj_norm[2]),
-    )
     adj_label = torch.sparse.FloatTensor(
         torch.LongTensor(adj_label[0].T),
         torch.FloatTensor(adj_label[1]),
@@ -161,18 +155,8 @@ def train():
         loss = norm * F.binary_cross_entropy(
             logits.view(-1), adj_label.to_dense().view(-1), weight=weight_tensor
         )
-        kl_divergence = (
-            0.5
-            / logits.size(0)
-            * (
-                1
-                + 2 * vgae_model.log_std
-                - vgae_model.mean**2
-                - torch.exp(vgae_model.log_std) ** 2
-            )
-            .sum(1)
-            .mean()
-        )
+        kl_divergence = (0.5 / logits.size(0) * (1 + 2 * vgae_model.log_std - vgae_model.mean**2 - torch.exp(vgae_model.log_std) ** 2)
+                         .sum(1).mean())
         loss -= kl_divergence
 
         # backward
@@ -182,7 +166,7 @@ def train():
 
         train_acc = get_acc(logits, adj_label)
 
-        val_roc, val_ap = get_scores(val_edges, val_edges_false, logits)
+        val_roc, val_ap, val_rec_acc = get_scores(val_edges, val_edges_false, logits)
 
         # Print out performance
         print(
@@ -196,13 +180,17 @@ def train():
             "{:.5f}".format(val_roc),
             "val_ap=",
             "{:.5f}".format(val_ap),
+            "val_rec_acc=",
+            "{:.5f}".format(val_rec_acc),
             "time=",
             "{:.5f}".format(time.time() - t),
         )
 
-    test_roc, test_ap = get_scores(test_edges, test_edges_false, logits)
+    test_roc, test_ap, test_rec_acc = get_scores(test_edges, test_edges_false, logits)
     print(
         "End of training!",
+        "test_rec_acc=",
+        "{:.5f}".format(test_rec_acc),
         "test_roc=",
         "{:.5f}".format(test_roc),
         "test_ap=",

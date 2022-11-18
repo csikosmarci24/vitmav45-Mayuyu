@@ -5,7 +5,7 @@ import scipy.sparse as sp
 import gzip
 import zipfile
 import pandas as pd
-
+from project.data.process_drugbank import parse_drugbank_xml
 
 """
 def parse_index_file(filename):
@@ -49,13 +49,16 @@ def load_data(dataset):
 
 
 def load_data():
-    with gzip.open('data/ChCh-Miner_durgbank-chem-chem.tsv.gz') as f:
+    with gzip.open('/Users/balazsmorvay/Documents/vitmav45-Mayuyu/project/data/files/ChCh-Miner_durgbank-chem-chem.tsv.gz') as f:
         graph_df = pd.read_csv(f, delimiter='\t', names=['Source', 'Target'])
 
     nx_graph = nx.from_pandas_edgelist(graph_df, source='Source', target='Target')
     adj = nx.adjacency_matrix(nx_graph)
 
-    features = sp.identity(adj.shape[0])
+    df = parse_drugbank_xml()
+    feature_df = df[['type', 'groups', 'ATC1', 'ATC2', 'ATC3', 'ATC4', 'ATC5']].copy()
 
-    #TODO: features
+    #features = sp.identity(adj.shape[0])
+    features = sp.csr_matrix(feature_df.values)
+
     return adj, features

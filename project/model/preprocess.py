@@ -27,9 +27,26 @@ def mask_test_edges(adj):
         edges, np.hstack([test_edge_idx, val_edge_idx]), axis=0
     )
 
-    def ismember(a, b, tol=5):
-        rows_close = np.all(np.round(a - b[:, None], tol) == 0, axis=-1)
-        return np.any(rows_close)
+    val_edges_false = []
+    while len(val_edges_false) < len(val_edges):
+        idx_i = np.random.randint(0, adj.shape[0])
+        idx_j = np.random.randint(0, adj.shape[0])
+        if idx_i == idx_j:
+            continue
+        if ismember([idx_i, idx_j], train_edges):
+            continue
+        if ismember([idx_j, idx_i], train_edges):
+            continue
+        if ismember([idx_i, idx_j], val_edges):
+            continue
+        if ismember([idx_j, idx_i], val_edges):
+            continue
+        if val_edges_false:
+            if ismember([idx_j, idx_i], np.array(val_edges_false)):
+                continue
+            if ismember([idx_i, idx_j], np.array(val_edges_false)):
+                continue
+        val_edges_false.append([idx_i, idx_j])
 
     test_edges_false = []
     while len(test_edges_false) < len(test_edges):
@@ -41,6 +58,12 @@ def mask_test_edges(adj):
             continue
         if ismember([idx_j, idx_i], edges):
             continue
+        continue_flag = False
+        for val_edge_false in val_edges_false:
+            if val_edge_false[0] == idx_i and val_edge_false[1] == idx_j or val_edge_false[0] == idx_i and val_edge_false[1] == idx_j:
+                continue_flag = True
+        if continue_flag:
+            continue
         if test_edges_false:
             if ismember([idx_j, idx_i], np.array(test_edges_false)):
                 continue
@@ -48,25 +71,9 @@ def mask_test_edges(adj):
                 continue
         test_edges_false.append([idx_i, idx_j])
 
-    val_edges_false = []
-    while len(val_edges_false) < len(val_edges):
-        idx_i = np.random.randint(0, adj.shape[0])
-        idx_j = np.random.randint(0, adj.shape[0])
-        if idx_i == idx_j:
-            continue
-        if ismember([idx_i, idx_j], edges):
-            continue
-        if ismember([idx_j, idx_i], edges):
-            continue
-        if val_edges_false:
-            if ismember([idx_j, idx_i], np.array(val_edges_false)):
-                continue
-            if ismember([idx_i, idx_j], np.array(val_edges_false)):
-                continue
-        val_edges_false.append([idx_i, idx_j])
-
     assert ~ismember(test_edges_false, edges)
-    assert ~ismember(val_edges_false, edges)
+    assert ~ismember(val_edges_false, train_edges)
+    assert ~ismember(val_edges_false, val_edges)
     assert ~ismember(val_edges, train_edges)
     assert ~ismember(test_edges, train_edges)
     assert ~ismember(val_edges, test_edges)
@@ -88,6 +95,11 @@ def mask_test_edges(adj):
         test_edges,
         test_edges_false,
     )
+
+
+def ismember(a, b, tol=5):
+    rows_close = np.all(np.round(a - b[:, None], tol) == 0, axis=-1)
+    return np.any(rows_close)
 
 
 def sparse_to_tuple(sparse_mx):

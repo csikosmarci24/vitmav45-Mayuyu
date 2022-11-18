@@ -13,7 +13,7 @@ def collapse_list_values(row):
 
 def parse_drugbank_xml():
     """Unzips the drugbank xml file, and loads its content into a Pandas dataframe. Returns the dataframe object."""
-    with zipfile.ZipFile('files/drugbank_all_full_database.xml.zip', 'r').open('full database.xml') as xml_file:
+    with zipfile.ZipFile('/Users/balazsmorvay/Documents/vitmav45-Mayuyu/project/data/files/drugbank_all_full_database.xml.zip', 'r').open('full database.xml') as xml_file:
         tree = ET.parse(xml_file)
     root = tree.getroot()
 
@@ -55,9 +55,33 @@ def parse_drugbank_xml():
     rows = list(map(collapse_list_values, rows))
     columns = ['drugbank_id', 'name', 'type', 'groups', 'atc_codes', 'categories', 'inchikey', 'inchi', 'description']
     drugbank_df = pd.DataFrame.from_dict(rows)[columns]
+
+    # dropping the following columns, as they contain no valuable information for training
+    drugbank_df = drugbank_df.drop('inchikey', axis=1)
+    drugbank_df = drugbank_df.drop('inchi', axis=1)
+    drugbank_df = drugbank_df.drop('description', axis=1)
+
+    # extracting information from the ATC code, then dropping the atc_codes column
+    drugbank_df['ATC1'] = drugbank_df['atc_codes'].astype(str).str[0]
+    drugbank_df['ATC2'] = drugbank_df['atc_codes'].astype(str).str[1:3]
+    drugbank_df['ATC3'] = drugbank_df['atc_codes'].astype(str).str[3]
+    drugbank_df['ATC4'] = drugbank_df['atc_codes'].astype(str).str[4]
+    drugbank_df['ATC5'] = drugbank_df['atc_codes'].astype(str).str[5:7]
+    drugbank_df = drugbank_df.drop('atc_codes', axis=1)
+
+    # converting the atc codes, types and groups to categorical
+    drugbank_df['ATC1'] = drugbank_df['ATC1'].astype('category')
+    drugbank_df['ATC2'] = drugbank_df['ATC2'].astype('category')
+    drugbank_df['ATC3'] = drugbank_df['ATC3'].astype('category')
+    drugbank_df['ATC4'] = drugbank_df['ATC4'].astype('category')
+    drugbank_df['ATC5'] = drugbank_df['ATC5'].astype('category')
+    drugbank_df['type'] = drugbank_df['type'].astype('category')
+    drugbank_df['groups'] = drugbank_df['groups'].astype('category')
+
+    # converting the categorical columns to integer columns
+    cat_cols = drugbank_df.select_dtypes(['category']).columns
+    drugbank_df[cat_cols] = drugbank_df[cat_cols].apply(lambda x: x.cat.codes)
+
+    print(drugbank_df.head)
+
     return drugbank_df
-
-
-
-if __name__ == '__main__':
-    print(parse_drugbank_xml())

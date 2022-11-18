@@ -13,7 +13,7 @@ def collapse_list_values(row):
 
 def parse_drugbank_xml():
     """Unzips the drugbank xml file, and loads its content into a Pandas dataframe. Returns the dataframe object."""
-    with zipfile.ZipFile('files/drugbank_all_full_database.xml.zip', 'r').open('full database.xml') as xml_file:
+    with zipfile.ZipFile('/Users/balazsmorvay/Documents/vitmav45-Mayuyu/project/data/files/drugbank_all_full_database.xml.zip', 'r').open('full database.xml') as xml_file:
         tree = ET.parse(xml_file)
     root = tree.getroot()
 

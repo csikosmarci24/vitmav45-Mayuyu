@@ -13,7 +13,7 @@ def collapse_list_values(row):
 
 def parse_drugbank_xml():
     """Unzips the drugbank xml file, and loads its content into a Pandas dataframe. Returns the dataframe object."""
-    with zipfile.ZipFile('/Users/balazsmorvay/Documents/vitmav45-Mayuyu/project/data/files/drugbank_all_full_database.xml.zip', 'r').open('full database.xml') as xml_file:
+    with zipfile.ZipFile('data/drugbank_all_full_database.xml.zip', 'r').open('full database.xml') as xml_file:
         tree = ET.parse(xml_file)
     root = tree.getroot()
 
@@ -81,7 +81,6 @@ def parse_drugbank_xml():
     # converting the categorical columns to integer columns
     cat_cols = drugbank_df.select_dtypes(['category']).columns
     drugbank_df[cat_cols] = drugbank_df[cat_cols].apply(lambda x: x.cat.codes)
-
-    print(drugbank_df.head)
+    drugbank_df.set_index('drugbank_id', inplace=True)
 
     return drugbank_df

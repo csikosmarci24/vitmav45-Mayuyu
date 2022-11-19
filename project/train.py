@@ -2,13 +2,13 @@ import argparse
 import os
 import time
 import dgl
-import model
 import numpy as np
 import scipy.sparse as sp
 import torch
 import torch.nn.functional as F
-from input_data import load_data
-from preprocess import (
+from project.model.model import VGAEModel
+from project.data.input_data import load_data
+from project.model.preprocess import (
     mask_test_edges,
     preprocess_graph,
     sparse_to_tuple,
@@ -23,7 +23,7 @@ parser.add_argument(
     "--learning_rate", type=float, default=0.01, help="Initial learning rate."
 )
 parser.add_argument(
-    "--epochs", "-e", type=int, default=200, help="Number of epochs to train."
+    "--epochs", "-e", type=int, default=300, help="Number of epochs to train."
 )
 parser.add_argument(
     "--hidden1",
@@ -134,7 +134,7 @@ def train():
     features = features.to_dense()
     in_dim = features.shape[-1]
 
-    vgae_model = model.VGAEModel(in_dim, args.hidden1, args.hidden2)
+    vgae_model = VGAEModel(in_dim, args.hidden1, args.hidden2, device)
     # create training component
     optimizer = torch.optim.Adam(vgae_model.parameters(), lr=args.learning_rate)
     print(

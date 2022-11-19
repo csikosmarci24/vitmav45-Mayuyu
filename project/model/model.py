@@ -1,14 +1,14 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from train import device
 
 from dgl.nn.pytorch import GraphConv
 
 
 class VGAEModel(nn.Module):
-    def __init__(self, in_dim, hidden1_dim, hidden2_dim):
+    def __init__(self, in_dim, hidden1_dim, hidden2_dim, device):
         super(VGAEModel, self).__init__()
+        self.device = device
         self.in_dim = in_dim
         self.hidden1_dim = hidden1_dim
         self.hidden2_dim = hidden2_dim
@@ -40,10 +40,10 @@ class VGAEModel(nn.Module):
         self.mean = self.layers[1](g, h)
         self.log_std = self.layers[2](g, h)
         gaussian_noise = torch.randn(features.size(0), self.hidden2_dim).to(
-            device
+            self.device
         )
         sampled_z = self.mean + gaussian_noise * torch.exp(self.log_std).to(
-            device
+            self.device
         )
         return sampled_z
 

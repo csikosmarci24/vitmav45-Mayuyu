@@ -48,6 +48,8 @@ Default hyperparameters (can be changed with command line arguments):
 * 1st hidden layer units (-h1): 32
 * 2nd hidden layer units (-h2): 16
 
+Wiki page on DrugBank features used during training: https://github.com/csikosmarci24/vitmav45-Mayuyu/wiki/Features-used-during-training
+
 # Running the code
 
 Build the image:

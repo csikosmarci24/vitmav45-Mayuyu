@@ -50,7 +50,20 @@ Default hyperparameters (can be changed with command line arguments):
 
 Wiki page on DrugBank features used during training: https://github.com/csikosmarci24/vitmav45-Mayuyu/wiki/Features-used-during-training
 
-# Running the code
+# Running the project with Conda
+
+Create environment:
+
+```
+conda env create -f environment.yml
+```
+
+Training and evaluating the model:
+```
+python project/train.py
+```
+
+# Running the project with Docker (experimental)
 
 Build the image:
 

@@ -25,8 +25,21 @@ Data:
 * DrugBank interaction graph (http://snap.stanford.edu/biodata/datasets/10001/10001-ChCh-Miner.html)
 
 Related files:
-* project/data_visualization.ipynb: Notebook with the download scripts, visualization and processing of the data
-* project/100edges.html: Additional visualization of the interaction graph with its first 100 edges
+* project/data_visualization.ipynb: Notebook with the download scripts, visualization and processing of the data.
+* project/100edges.html: Additional visualization of the interaction graph with its first 100 edges.
+
+# Milestone 2
+
+Variational Graph Auto-Encoder model created. Training and evaluation works with and without extracted DrugBank features.
+
+The model is based on: https://github.com/dmlc/dgl/tree/master/examples/pytorch/vgae
+
+Related files:
+* project/data/process_graph.py: Load interaction graph from file and return Networkx representation.
+* project/data/process_drugbank.py: Load DrugBank database from file and return processed Pandas DataFrame.
+* project/data/input_data.py: Return the interaction graph's adjacency matrix and the features from the database.
+* project/model/preprocess.py: Splitting the graph to train, validation and test subgraphs for training.
+* project/model/model.py: Implementation of the model.
 
 # Running the code
 

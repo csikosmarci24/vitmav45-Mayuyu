@@ -67,7 +67,7 @@ Test GPU access in container:
 python project/hello.py
 ```
 
-Training the model:
+Training and evaluating the model:
 ```
 python project/train.py
 ```

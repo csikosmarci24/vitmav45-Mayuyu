@@ -16,7 +16,7 @@
 	"postCreateCommand": "cd project/data && mkdir files && cd files && gdown 1Ot-ICpiJRlisFvM9Fi6TM3Q6kAZaLS0y && gdown 1LSdAthCa69kWRIKoI5UmclLgf4OsSNAm && gdown 15_hqow9NT_M49OX7cXrG5P6vCgfbKyhP",
 
 	// Uncomment when using a ptrace-based debugger like C++, Go, and Rust
-	"runArgs": [ "--gpus", "all" ]
+	"runArgs": [ "--gpus", "device=0" ]
 
 	// Uncomment to use the Docker CLI from inside the container. See https://aka.ms/vscode-remote/samples/docker-from-docker.
 	// "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],

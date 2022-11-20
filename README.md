@@ -40,6 +40,13 @@ Related files:
 * project/data/input_data.py: Return the interaction graph's adjacency matrix and the features from the database.
 * project/model/preprocess.py: Splitting the graph to train, validation and test subgraphs for training.
 * project/model/model.py: Implementation of the model.
+* project/train.py: Training and evaluating the model.
+
+Default hyperparameters (can be changed with command line arguments):
+* Learning rate (--learning_rate): 0.01
+* Number of epochs (-e): 300
+* 1st hidden layer units (-h1): 32
+* 2nd hidden layer units (-h2): 16
 
 # Running the code
 
@@ -58,6 +65,11 @@ docker run --gpus all -it <image-name>
 Test GPU access in container:
 ```
 python project/hello.py
+```
+
+Training the model:
+```
+python project/train.py
 ```
 
 All steps with shell script (Linux):

@@ -14,7 +14,10 @@ from model.preprocess import (
     sparse_to_tuple,
 )
 from sklearn.metrics import average_precision_score, roc_auc_score
+import warnings
 
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "True"
 

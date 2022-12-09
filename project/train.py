@@ -6,9 +6,9 @@ import numpy as np
 import scipy.sparse as sp
 import torch
 import torch.nn.functional as F
-from project.model.model import VGAEModel
-from project.data.input_data import load_data
-from project.model.preprocess import (
+from model.model import VGAEModel
+from data.input_data import load_data
+from model.preprocess import (
     mask_test_edges,
     preprocess_graph,
     sparse_to_tuple,

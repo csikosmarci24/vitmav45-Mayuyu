@@ -1,7 +1,7 @@
 import networkx as nx
 import scipy.sparse as sp
-from project.data.process_drugbank import parse_drugbank_xml
-from project.data.process_graph import parse_graph
+from data.process_drugbank import parse_drugbank_xml
+from data.process_graph import parse_graph
 
 
 def load_data():

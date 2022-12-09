@@ -2,9 +2,11 @@ import networkx as nx
 import scipy.sparse as sp
 from data.process_drugbank import parse_drugbank_xml
 from data.process_graph import parse_graph
+from data.fetch_data import fetch_data
 
 
 def load_data():
+    fetch_data()
     nx_graph = parse_graph()
     df = parse_drugbank_xml()
 

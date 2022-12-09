@@ -6,6 +6,7 @@ def fetch_data():
     cwd = os.path.dirname(os.path.abspath(__file__))
 
     if not os.path.exists(os.path.join(cwd, 'files')):
+        print('Files directory doesn\'t exist, creating...')
         os.makedirs(os.path.join(cwd, 'files'))
 
     if not os.path.exists(os.path.join(cwd, 'files/ChCh-Miner_durgbank-chem-chem.tsv.gz')):

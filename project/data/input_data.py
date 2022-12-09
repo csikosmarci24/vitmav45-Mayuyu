@@ -6,8 +6,11 @@ from data.fetch_data import fetch_data
 
 
 def load_data():
+    print('Checking and downloading files...')
     fetch_data()
+    print('Processing interaction graph...')
     nx_graph = parse_graph()
+    print('Processing DrugBank...')
     df = parse_drugbank_xml()
 
     # If drug is not in drugbank, then delete it from the graph

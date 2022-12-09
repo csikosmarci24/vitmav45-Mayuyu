@@ -43,13 +43,17 @@ parser.add_argument(
     help="Number of units in hidden layer 2.",
 )
 parser.add_argument("--gpu_id", type=int, default=0, help="GPU id to use.")
+parser.add_argument("--cpu_only", default=False, action=argparse.BooleanOptionalAction)
 args = parser.parse_args()
 
 
 # check device
-device = torch.device(
-    "cuda:{}".format(args.gpu_id) if torch.cuda.is_available() else "cpu"
-)
+if (args.cpu_only):
+    device = torch.device("cpu")
+else:
+    device = torch.device(
+        "cuda:{}".format(args.gpu_id) if torch.cuda.is_available() else "cpu"
+    )
 
 
 def get_acc(adj_rec, adj_label):

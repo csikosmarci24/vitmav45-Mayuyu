@@ -5,6 +5,9 @@ import os
 def fetch_data():
     cwd = os.path.dirname(os.path.abspath(__file__))
 
+    if not os.path.exists(os.path.join(cwd, 'files')):
+        os.makedirs(os.path.join(cwd, 'files'))
+
     if not os.path.exists(os.path.join(cwd, 'files/ChCh-Miner_durgbank-chem-chem.tsv.gz')):
         download('https://drive.google.com/uc?id=1Ot-ICpiJRlisFvM9Fi6TM3Q6kAZaLS0y', os.path.join(cwd, 'files/ChCh-Miner_durgbank-chem-chem.tsv.gz'))
     if not os.path.exists(os.path.join(cwd, 'files/drugbank_all_full_database.xml.zip')):

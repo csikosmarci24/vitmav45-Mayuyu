@@ -103,7 +103,7 @@ def train():
     adj_normalization, adj_norm = preprocess_graph(adj)
 
     # Create model
-    graph = dgl.from_scipy(adj_normalization)
+    graph = dgl.from_scipy(adj_normalization).to(device)
     graph.add_self_loop()
 
     pos_weight = float(adj.shape[0] * adj.shape[0] - adj.sum()) / adj.sum()
@@ -120,21 +120,23 @@ def train():
         torch.LongTensor(adj_label[0].T),
         torch.FloatTensor(adj_label[1]),
         torch.Size(adj_label[2]),
-    )
+    ).to(device)
     features = torch.sparse.FloatTensor(
         torch.LongTensor(features[0].T),
         torch.FloatTensor(features[1]),
         torch.Size(features[2]),
-    )
+    ).to(device)
 
     weight_mask = adj_label.to_dense().view(-1) == 1
-    weight_tensor = torch.ones(weight_mask.size(0))
+    weight_tensor = torch.ones(weight_mask.size(0)).to(device)
     weight_tensor[weight_mask] = pos_weight
 
     features = features.to_dense()
     in_dim = features.shape[-1]
 
     vgae_model = VGAEModel(in_dim, args.hidden1, args.hidden2, device)
+    vgae_model.to(device)
+
     # create training component
     optimizer = torch.optim.Adam(vgae_model.parameters(), lr=args.learning_rate)
     print(

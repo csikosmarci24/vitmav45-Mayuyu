@@ -1,0 +1,15 @@
+name: mayuyu_clone_cpu
+channels:
+  - dglteam
+  - pytorch
+  - defaults
+  - conda-forge
+dependencies:
+  - dgl
+  - pytorch
+  - cpuonly
+  - pandas
+  - scikit-learn
+  - pip
+  - pip:
+      - gdown

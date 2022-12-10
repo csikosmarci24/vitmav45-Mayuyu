@@ -23,6 +23,14 @@ def parse_drugbank_xml():
     ns = '{http://www.drugbank.ca}'
     inchikey_template = "{ns}calculated-properties/{ns}property[{ns}kind='InChIKey']/{ns}value"
     inchi_template = "{ns}calculated-properties/{ns}property[{ns}kind='InChI']/{ns}value"
+    logP_template = "{ns}calculated-properties/{ns}property[{ns}kind='logP']/{ns}value"
+    logS_template = "{ns}calculated-properties/{ns}property[{ns}kind='logS']/{ns}value"
+    psa_template = "{ns}calculated-properties/{ns}property[{ns}kind='Polar Surface Area (PSA)']/{ns}value"
+    refractivity_template = "{ns}calculated-properties/{ns}property[{ns}kind='Refractivity']/{ns}value"
+    polarizability_template = "{ns}calculated-properties/{ns}property[{ns}kind='Polarizability']/{ns}value"
+    pka_acidic_template = "{ns}calculated-properties/{ns}property[{ns}kind='pKa (strongest acidic)']/{ns}value"
+    pka_basic_template = "{ns}calculated-properties/{ns}property[{ns}kind='pKa (strongest basic)']/{ns}value"
+    nor_template = "{ns}calculated-properties/{ns}property[{ns}kind='Number of Rings']/{ns}value"
 
     rows = list()
     for i, drug in enumerate(root):
@@ -39,7 +47,14 @@ def parse_drugbank_xml():
         row['categories'] = [x.findtext(ns + 'category') for x in
                              drug.findall("{ns}categories/{ns}category".format(ns=ns))]
         row['inchi'] = drug.findtext(inchi_template.format(ns=ns))
-        row['inchikey'] = drug.findtext(inchikey_template.format(ns=ns))
+        row['logP'] = drug.findtext(logP_template.format(ns=ns))
+        row['logS'] = drug.findtext(logS_template.format(ns=ns))
+        row['psa'] = drug.findtext(psa_template.format(ns=ns))
+        row['refractivity'] = drug.findtext(refractivity_template.format(ns=ns))
+        row['polarizability'] = drug.findtext(polarizability_template.format(ns=ns))
+        row['pKa_acidic'] = drug.findtext(pka_acidic_template.format(ns=ns))
+        row['pKa_basic'] = drug.findtext(pka_basic_template.format(ns=ns))
+        row['num_rings'] = drug.findtext(nor_template.format(ns=ns))
 
         # Add drug aliases
         aliases = {
@@ -87,3 +102,7 @@ def parse_drugbank_xml():
     drugbank_df.set_index('drugbank_id', inplace=True)
 
     return drugbank_df
+
+
+if __name__ == "__main__":
+    parse_drugbank_xml()

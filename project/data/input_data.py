@@ -21,6 +21,7 @@ def load_data():
     nx_graph.remove_nodes_from(del_list)
 
     adj = nx.adjacency_matrix(nx_graph)
+    print(adj.shape)
 
     df = df.loc[list(nx_graph.nodes())]
     feature_df = df[['type', 'groups', 'ATC1', 'ATC2', 'ATC3', 'ATC4', 'ATC5']].copy()

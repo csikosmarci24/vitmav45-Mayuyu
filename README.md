@@ -71,20 +71,10 @@ Build the image:
 docker build . -t <image-name>
 ```
 
-Run container:
+Create and run container (starts training):
 
 ```
 docker run --gpus all -it <image-name>
-```
-
-Test GPU access in container:
-```
-python project/hello.py
-```
-
-Training and evaluating the model:
-```
-python project/train.py
 ```
 
 All steps with shell script (Linux):

@@ -1,14 +1,13 @@
-name: mayuyu_clone
+name: mayuyu_clone_cpu
 channels:
   - dglteam
   - pytorch
-  - nvidia
   - defaults
   - conda-forge
 dependencies:
-  - dgl-cuda11.6
+  - dgl
   - pytorch
-  - pytorch-cuda=11.6
+  - cpuonly
   - pandas
   - scikit-learn
   - pip

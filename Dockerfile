@@ -9,4 +9,4 @@ RUN conda env create -f environment.yml
 
 EXPOSE 4000
 
-ENTRYPOINT [ "conda", "run", "-n", "mayuyu_clone", "--live-stream", "python", "project/train.py" ]
+ENTRYPOINT [ "conda", "run", "-n", "mayuyu", "--live-stream", "python", "project/train.py" ]

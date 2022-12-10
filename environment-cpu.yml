@@ -1,4 +1,4 @@
-name: mayuyu_clone_cpu
+name: mayuyu_cpu
 channels:
   - dglteam
   - pytorch

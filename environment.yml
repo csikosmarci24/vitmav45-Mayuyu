@@ -11,6 +11,8 @@ dependencies:
   - pytorch-cuda=11.6
   - pandas
   - scikit-learn
+  - tensorboard
   - pip
   - pip:
       - gdown
+      - torch-tb-profiler

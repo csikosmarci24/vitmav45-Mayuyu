@@ -53,15 +53,21 @@ Wiki page on DrugBank features used during training: https://github.com/csikosma
 # Running the project with Conda
 
 Create environment:
-
 ```
 conda env create -f environment.yml
 ```
 
-Training and evaluating the model:
+Activate environment:
+```
+conda activate mayuyu
+```
+
+Train and evaluate the model:
 ```
 python project/train.py
 ```
+
+For systems without CUDA-enabled GPUs, environment-cpu.yml can be used, with the environment name of mayuyu_cpu.
 
 # Running the project with Docker (experimental)
 

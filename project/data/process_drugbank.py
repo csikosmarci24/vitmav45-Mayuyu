@@ -71,13 +71,9 @@ def parse_drugbank_xml():
         rows.append(row)
 
     rows = list(map(collapse_list_values, rows))
-    columns = ['drugbank_id', 'name', 'type', 'groups', 'atc_codes', 'categories', 'inchikey', 'inchi', 'description']
+    columns = ['drugbank_id', 'name', 'type', 'groups', 'atc_codes', 'categories', 'logP', 'logS', 'psa',
+               'refractivity', 'polarizability', 'pKa_acidic', 'pKa_basic', 'num_rings']
     drugbank_df = pd.DataFrame.from_dict(rows)[columns]
-
-    # dropping the following columns, as they contain no valuable information for training
-    drugbank_df = drugbank_df.drop('inchikey', axis=1)
-    drugbank_df = drugbank_df.drop('inchi', axis=1)
-    drugbank_df = drugbank_df.drop('description', axis=1)
 
     # extracting information from the ATC code, then dropping the atc_codes column
     drugbank_df['ATC1'] = drugbank_df['atc_codes'].astype(str).str[0]
@@ -95,6 +91,15 @@ def parse_drugbank_xml():
     drugbank_df['ATC5'] = drugbank_df['ATC5'].astype('category')
     drugbank_df['type'] = drugbank_df['type'].astype('category')
     drugbank_df['groups'] = drugbank_df['groups'].astype('category')
+
+    drugbank_df['logP'] = pd.to_numeric(drugbank_df['logP'])
+    drugbank_df['logS'] = pd.to_numeric(drugbank_df['logS'])
+    drugbank_df['psa'] = pd.to_numeric(drugbank_df['psa'])
+    drugbank_df['refractivity'] = pd.to_numeric(drugbank_df['refractivity'])
+    drugbank_df['polarizability'] = pd.to_numeric(drugbank_df['polarizability'])
+    drugbank_df['pKa_acidic'] = pd.to_numeric(drugbank_df['pKa_acidic'])
+    drugbank_df['pKa_basic'] = pd.to_numeric(drugbank_df['pKa_basic'])
+    drugbank_df['num_rings'] = pd.to_numeric(drugbank_df['num_rings'])
 
     # converting the categorical columns to integer columns
     cat_cols = drugbank_df.select_dtypes(['category']).columns

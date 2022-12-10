@@ -26,7 +26,7 @@ parser.add_argument(
     "--learning_rate", type=float, default=0.01, help="Initial learning rate."
 )
 parser.add_argument(
-    "--epochs", "-e", type=int, default=300, help="Number of epochs to train."
+    "--epochs", "-e", type=int, default=350, help="Number of epochs to train."
 )
 parser.add_argument(
     "--hidden1",

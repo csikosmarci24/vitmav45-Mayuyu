@@ -1,11 +1,16 @@
 import networkx as nx
 import scipy.sparse as sp
-from project.data.process_drugbank import parse_drugbank_xml
-from project.data.process_graph import parse_graph
+from data.process_drugbank import parse_drugbank_xml
+from data.process_graph import parse_graph
+from data.fetch_data import fetch_data
 
 
 def load_data():
+    print('Checking and downloading files...')
+    fetch_data()
+    print('Processing interaction graph...')
     nx_graph = parse_graph()
+    print('Processing DrugBank...')
     df = parse_drugbank_xml()
 
     # If drug is not in drugbank, then delete it from the graph

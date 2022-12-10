@@ -6,15 +6,18 @@ import numpy as np
 import scipy.sparse as sp
 import torch
 import torch.nn.functional as F
-from project.model.model import VGAEModel
-from project.data.input_data import load_data
-from project.model.preprocess import (
+from model.model import VGAEModel
+from data.input_data import load_data
+from model.preprocess import (
     mask_test_edges,
     preprocess_graph,
     sparse_to_tuple,
 )
 from sklearn.metrics import average_precision_score, roc_auc_score
+import warnings
 
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "True"
 
@@ -40,13 +43,17 @@ parser.add_argument(
     help="Number of units in hidden layer 2.",
 )
 parser.add_argument("--gpu_id", type=int, default=0, help="GPU id to use.")
+parser.add_argument("--cpu_only", default=False, action=argparse.BooleanOptionalAction)
 args = parser.parse_args()
 
 
 # check device
-device = torch.device(
-    "cuda:{}".format(args.gpu_id) if torch.cuda.is_available() else "cpu"
-)
+if (args.cpu_only):
+    device = torch.device("cpu")
+else:
+    device = torch.device(
+        "cuda:{}".format(args.gpu_id) if torch.cuda.is_available() else "cpu"
+    )
 
 
 def get_acc(adj_rec, adj_label):
@@ -103,7 +110,7 @@ def train():
     adj_normalization, adj_norm = preprocess_graph(adj)
 
     # Create model
-    graph = dgl.from_scipy(adj_normalization)
+    graph = dgl.from_scipy(adj_normalization).to(device)
     graph.add_self_loop()
 
     pos_weight = float(adj.shape[0] * adj.shape[0] - adj.sum()) / adj.sum()
@@ -120,21 +127,23 @@ def train():
         torch.LongTensor(adj_label[0].T),
         torch.FloatTensor(adj_label[1]),
         torch.Size(adj_label[2]),
-    )
+    ).to(device)
     features = torch.sparse.FloatTensor(
         torch.LongTensor(features[0].T),
         torch.FloatTensor(features[1]),
         torch.Size(features[2]),
-    )
+    ).to(device)
 
     weight_mask = adj_label.to_dense().view(-1) == 1
-    weight_tensor = torch.ones(weight_mask.size(0))
+    weight_tensor = torch.ones(weight_mask.size(0)).to(device)
     weight_tensor[weight_mask] = pos_weight
 
     features = features.to_dense()
     in_dim = features.shape[-1]
 
     vgae_model = VGAEModel(in_dim, args.hidden1, args.hidden2, device)
+    vgae_model.to(device)
+
     # create training component
     optimizer = torch.optim.Adam(vgae_model.parameters(), lr=args.learning_rate)
     print(

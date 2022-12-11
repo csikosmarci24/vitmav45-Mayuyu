@@ -89,7 +89,7 @@ chmod +x build.sh
 ./build.sh
 ```
 
-# VSCode development in container
+# VSCode development in container (not needed anymore)
 
 1. Install Remote Development extension
 2. Command Palette (Ctrl+Shift+P): Dev Containers: Rebuild and Reopen in Container
@@ -106,6 +106,8 @@ Launch Tensorboard from command line:
 ```
 tensorboard --logdir=runs
 ```
+
+If working with Visual Studio Code, Tensorboard can be opened in the application.
 
 # Materials for team members
 

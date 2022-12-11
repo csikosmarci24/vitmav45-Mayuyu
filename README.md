@@ -95,6 +95,18 @@ chmod +x build.sh
 2. Command Palette (Ctrl+Shift+P): Dev Containers: Rebuild and Reopen in Container
 3. Without Nvidia GPU: in .devcontainer/devcontainer.json comment "runArgs"
 
+# Hyperparameter tuning
+
+Run the train script with flag:
+```
+python project/train.py --hp_tuning
+```
+
+Launch Tensorboard from command line:
+```
+tensorboard --logdir=runs
+```
+
 # Materials for team members
 
 https://paperswithcode.com/paper/variational-graph-auto-encoders

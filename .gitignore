@@ -135,3 +135,6 @@ project/data/files
 
 # Pycharm idea
 .idea
+
+# TensorBoard runs
+runs/

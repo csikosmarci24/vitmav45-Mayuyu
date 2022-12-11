@@ -23,6 +23,14 @@ def parse_drugbank_xml():
     ns = '{http://www.drugbank.ca}'
     inchikey_template = "{ns}calculated-properties/{ns}property[{ns}kind='InChIKey']/{ns}value"
     inchi_template = "{ns}calculated-properties/{ns}property[{ns}kind='InChI']/{ns}value"
+    logP_template = "{ns}calculated-properties/{ns}property[{ns}kind='logP']/{ns}value"
+    logS_template = "{ns}calculated-properties/{ns}property[{ns}kind='logS']/{ns}value"
+    psa_template = "{ns}calculated-properties/{ns}property[{ns}kind='Polar Surface Area (PSA)']/{ns}value"
+    refractivity_template = "{ns}calculated-properties/{ns}property[{ns}kind='Refractivity']/{ns}value"
+    polarizability_template = "{ns}calculated-properties/{ns}property[{ns}kind='Polarizability']/{ns}value"
+    pka_acidic_template = "{ns}calculated-properties/{ns}property[{ns}kind='pKa (strongest acidic)']/{ns}value"
+    pka_basic_template = "{ns}calculated-properties/{ns}property[{ns}kind='pKa (strongest basic)']/{ns}value"
+    nor_template = "{ns}calculated-properties/{ns}property[{ns}kind='Number of Rings']/{ns}value"
 
     rows = list()
     for i, drug in enumerate(root):
@@ -39,7 +47,14 @@ def parse_drugbank_xml():
         row['categories'] = [x.findtext(ns + 'category') for x in
                              drug.findall("{ns}categories/{ns}category".format(ns=ns))]
         row['inchi'] = drug.findtext(inchi_template.format(ns=ns))
-        row['inchikey'] = drug.findtext(inchikey_template.format(ns=ns))
+        row['logP'] = drug.findtext(logP_template.format(ns=ns))
+        row['logS'] = drug.findtext(logS_template.format(ns=ns))
+        row['psa'] = drug.findtext(psa_template.format(ns=ns))
+        row['refractivity'] = drug.findtext(refractivity_template.format(ns=ns))
+        row['polarizability'] = drug.findtext(polarizability_template.format(ns=ns))
+        row['pKa_acidic'] = drug.findtext(pka_acidic_template.format(ns=ns))
+        row['pKa_basic'] = drug.findtext(pka_basic_template.format(ns=ns))
+        row['num_rings'] = drug.findtext(nor_template.format(ns=ns))
 
         # Add drug aliases
         aliases = {
@@ -56,13 +71,9 @@ def parse_drugbank_xml():
         rows.append(row)
 
     rows = list(map(collapse_list_values, rows))
-    columns = ['drugbank_id', 'name', 'type', 'groups', 'atc_codes', 'categories', 'inchikey', 'inchi', 'description']
+    columns = ['drugbank_id', 'name', 'type', 'groups', 'atc_codes', 'categories', 'logP', 'logS', 'psa',
+               'refractivity', 'polarizability', 'pKa_acidic', 'pKa_basic', 'num_rings']
     drugbank_df = pd.DataFrame.from_dict(rows)[columns]
-
-    # dropping the following columns, as they contain no valuable information for training
-    drugbank_df = drugbank_df.drop('inchikey', axis=1)
-    drugbank_df = drugbank_df.drop('inchi', axis=1)
-    drugbank_df = drugbank_df.drop('description', axis=1)
 
     # extracting information from the ATC code, then dropping the atc_codes column
     drugbank_df['ATC1'] = drugbank_df['atc_codes'].astype(str).str[0]
@@ -81,9 +92,22 @@ def parse_drugbank_xml():
     drugbank_df['type'] = drugbank_df['type'].astype('category')
     drugbank_df['groups'] = drugbank_df['groups'].astype('category')
 
+    drugbank_df['logP'] = pd.to_numeric(drugbank_df['logP'])
+    drugbank_df['logS'] = pd.to_numeric(drugbank_df['logS'])
+    drugbank_df['psa'] = pd.to_numeric(drugbank_df['psa'])
+    drugbank_df['refractivity'] = pd.to_numeric(drugbank_df['refractivity'])
+    drugbank_df['polarizability'] = pd.to_numeric(drugbank_df['polarizability'])
+    drugbank_df['pKa_acidic'] = pd.to_numeric(drugbank_df['pKa_acidic'])
+    drugbank_df['pKa_basic'] = pd.to_numeric(drugbank_df['pKa_basic'])
+    drugbank_df['num_rings'] = pd.to_numeric(drugbank_df['num_rings'])
+
     # converting the categorical columns to integer columns
     cat_cols = drugbank_df.select_dtypes(['category']).columns
     drugbank_df[cat_cols] = drugbank_df[cat_cols].apply(lambda x: x.cat.codes)
     drugbank_df.set_index('drugbank_id', inplace=True)
 
     return drugbank_df
+
+
+if __name__ == "__main__":
+    parse_drugbank_xml()

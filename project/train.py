@@ -45,6 +45,7 @@ parser.add_argument(
 )
 parser.add_argument("--gpu_id", type=int, default=0, help="GPU id to use.")
 parser.add_argument("--cpu_only", default=False, action=argparse.BooleanOptionalAction)
+parser.add_argument("--hp_tuning", default=False, action=argparse.BooleanOptionalAction)
 args = parser.parse_args()
 
 
@@ -85,11 +86,7 @@ def get_scores(edges_pos, edges_neg, adj_rec):
     return roc_score, ap_score, rec_acc
 
 
-def train():
-    writer = SummaryWriter()
-
-    adj, features = load_data()
-
+def train(adj, features):
     features = sparse_to_tuple(features.tocoo())
 
     # Store original adjacency matrix (without diagonal entries) for later
@@ -179,10 +176,6 @@ def train():
         train_acc = get_acc(logits, adj_label)
 
         val_roc, val_ap, val_rec_acc = get_scores(val_edges, val_edges_false, logits)
-        writer.add_scalar("Training loss", loss, epoch)
-        writer.add_scalar("ROC Score (validation)", val_roc, epoch)
-        writer.add_scalar("Average Precision Score (validation)", val_ap, epoch)
-        writer.add_scalar("Reconstruction Accuracy (validation)", val_rec_acc, epoch)
 
         # Print out performance
         print(
@@ -202,6 +195,12 @@ def train():
             "{:.5f}".format(time.time() - t),
         )
 
+        writer.add_scalar('Training loss', loss, epoch)
+        writer.add_scalar('Training accuracy', train_acc, epoch)
+        writer.add_scalar('ROC Score (validation)', val_roc, epoch)
+        writer.add_scalar('Average Precision Score (validation)', val_ap, epoch)
+        writer.add_scalar('Reconstruction Accuracy (validation)', val_rec_acc, epoch)
+
     test_roc, test_ap, test_rec_acc = get_scores(test_edges, test_edges_false, logits)
     print(
         "End of training!",
@@ -213,6 +212,37 @@ def train():
         "{:.5f}".format(test_ap),
     )
 
+    if args.hp_tuning:
+        writer.add_hparams({'Epochs': args.epochs,
+                            'Learning rate': args.learning_rate,
+                            'N of units in hidden1 layer': args.hidden1,
+                            'N of units in hidden2 layer': args.hidden2},
+                            {'Loss': loss,
+                             'ROC Score': test_rec_acc,
+                             'Average Precision Score': test_ap,
+                             'Reconstruction Accuracy': test_rec_acc})
+    else:
+        writer.add_scalar('ROC Score (test)', test_rec_acc)
+        writer.add_scalar('Average Precision Score (test)', test_ap)
+        writer.add_scalar('Reconstruction Accuracy (test)', test_rec_acc)
+
+def hyperparam_tuning(adj, features):
+    for epochs in [100, 200, 300]:
+        for lr in [0.001, 0.01, 0.1]:
+            for h1 in [16, 32, 64]:
+                for h2 in [16, 32, 64]:
+                    args.epochs = epochs
+                    args.learning_rate = lr
+                    args.hidden1 = h1
+                    args.hidden2 = h2
+                    train(adj, features)
 
 if __name__ == "__main__":
-    train()
+    writer = SummaryWriter()
+    adj, features = load_data()
+    if args.hp_tuning:
+        hyperparam_tuning(adj, features)
+    else:
+        train(adj, features)
+    writer.flush()
+    writer.close()

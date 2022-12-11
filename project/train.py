@@ -15,6 +15,7 @@ from model.preprocess import (
 )
 from sklearn.metrics import average_precision_score, roc_auc_score
 import warnings
+from torch.utils.tensorboard import SummaryWriter
 
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
@@ -85,6 +86,8 @@ def get_scores(edges_pos, edges_neg, adj_rec):
 
 
 def train():
+    writer = SummaryWriter()
+
     adj, features = load_data()
 
     features = sparse_to_tuple(features.tocoo())
@@ -176,6 +179,10 @@ def train():
         train_acc = get_acc(logits, adj_label)
 
         val_roc, val_ap, val_rec_acc = get_scores(val_edges, val_edges_false, logits)
+        writer.add_scalar("Training loss", loss, epoch)
+        writer.add_scalar("ROC Score (validation)", val_roc, epoch)
+        writer.add_scalar("Average Precision Score (validation)", val_ap, epoch)
+        writer.add_scalar("Reconstruction Accuracy (validation)", val_rec_acc, epoch)
 
         # Print out performance
         print(

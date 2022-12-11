@@ -16,3 +16,4 @@ dependencies:
   - pip:
       - gdown
       - torch-tb-profiler
+      - tensorflow

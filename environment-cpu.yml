@@ -10,8 +10,9 @@ dependencies:
   - cpuonly
   - pandas
   - scikit-learn
-  - tensorboad 
+  - tensorboard 
   - pip
   - pip:
       - gdown
       - torch-tb-profiler
+      - tensorflow
